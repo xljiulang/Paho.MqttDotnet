@@ -27,7 +27,7 @@ namespace Paho.MqttDotnet
         /// <summary>
         /// 是否已调用setXXX
         /// </summary>
-        private bool seted = false;
+        private long seted = 0L;
 
         /// <summary>
         /// 同步锁
@@ -47,17 +47,12 @@ namespace Paho.MqttDotnet
         /// <returns></returns>
         public bool SetResult(object value)
         {
-            lock (this.syncRoot)
+            if (Interlocked.CompareExchange(ref this.seted, 1L, 0L) == 1L)
             {
-                if (this.seted == true)
-                {
-                    return false;
-                }
-
-                this.seted = true;
-                this.result = (TResult)value;
-                return this.resetEvent.Set();
+                return false;
             }
+            this.result = (TResult)value;
+            return this.resetEvent.Set();
         }
 
         /// <summary>
@@ -67,17 +62,13 @@ namespace Paho.MqttDotnet
         /// <returns></returns>
         public bool SetException(Exception ex)
         {
-            lock (this.syncRoot)
+            if (Interlocked.CompareExchange(ref this.seted, 1L, 0L) == 1L)
             {
-                if (this.seted == true)
-                {
-                    return false;
-                }
-
-                this.seted = true;
-                this.exception = ex;
-                return this.resetEvent.Set();
+                return false;
             }
+
+            this.exception = ex;
+            return this.resetEvent.Set();
         }
 
         /// <summary>
@@ -86,19 +77,16 @@ namespace Paho.MqttDotnet
         /// <returns></returns>
         public TResult GetResult()
         {
-            lock (this.syncRoot)
+            if (Interlocked.Read(ref this.seted) == 0L)
             {
-                if (this.seted == false)
-                {
-                    this.resetEvent.WaitOne();
-                }
-
-                if (this.exception != null)
-                {
-                    throw exception;
-                }
-                return this.result;
+                this.resetEvent.WaitOne();
             }
+
+            if (this.exception != null)
+            {
+                throw exception;
+            }
+            return this.result;
         }
 
         /// <summary>

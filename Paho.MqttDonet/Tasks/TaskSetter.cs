@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Paho.MqttDotnet
@@ -15,22 +16,18 @@ namespace Paho.MqttDotnet
         /// <summary>
         /// 是否为异步
         /// </summary>
-        private bool? isAsync;
+        private long isAsync = -1L;
 
         /// <summary>
         /// 同步设置器
         /// </summary>
-        private TaskSetterSync<TResult> syncSetter;
+        private Lazy<TaskSetterSync<TResult>> syncSetter = new Lazy<TaskSetterSync<TResult>>(() => new TaskSetterSync<TResult>(), true);
 
         /// <summary>
         /// 异步设置器
         /// </summary>
-        private TaskSetterAsync<TResult> asyncSetter;
+        private Lazy<TaskSetterAsync<TResult>> asyncSetter = new Lazy<TaskSetterAsync<TResult>>(() => new TaskSetterAsync<TResult>(), true);
 
-        /// <summary>
-        /// 同步锁
-        /// </summary>
-        private readonly object syncRoot = new object();
 
         /// <summary>
         /// 同步获取任务结果
@@ -38,12 +35,8 @@ namespace Paho.MqttDotnet
         /// <returns></returns>
         public TResult GetResult()
         {
-            lock (this.syncRoot)
-            {
-                this.isAsync = false;
-                this.syncSetter = new TaskSetterSync<TResult>();
-                return this.syncSetter.GetResult();
-            }
+            Interlocked.Exchange(ref this.isAsync, 0L);
+            return this.syncSetter.Value.GetResult();
         }
 
         /// <summary>
@@ -52,12 +45,8 @@ namespace Paho.MqttDotnet
         /// <returns></returns>
         public Task<TResult> GetTask()
         {
-            lock (this.syncRoot)
-            {
-                this.isAsync = true;
-                this.asyncSetter = new TaskSetterAsync<TResult>();
-                return this.asyncSetter.GetTask();
-            }
+            Interlocked.Exchange(ref this.isAsync, 1L);
+            return this.asyncSetter.Value.GetTask();
         }
 
         /// <summary>
@@ -67,22 +56,13 @@ namespace Paho.MqttDotnet
         /// <returns></returns>
         public bool SetResult(object value)
         {
-            lock (this.syncRoot)
+            if (Interlocked.Read(ref this.isAsync) == 0L)
             {
-                if (this.isAsync == null)
-                {
-                    this.isAsync = true;
-                    this.asyncSetter = new TaskSetterAsync<TResult>();
-                }
-
-                if (this.isAsync == true)
-                {
-                    return this.asyncSetter.SetResult(value);
-                }
-                else
-                {
-                    return this.syncSetter.SetResult(value);
-                }
+                return this.syncSetter.Value.SetResult(value);
+            }
+            else
+            {
+                return this.asyncSetter.Value.SetResult(value);
             }
         }
 
@@ -93,22 +73,13 @@ namespace Paho.MqttDotnet
         /// <returns></returns>
         public bool SetException(Exception ex)
         {
-            lock (this.syncRoot)
+            if (Interlocked.Read(ref this.isAsync) == 0L)
             {
-                if (this.isAsync == null)
-                {
-                    this.isAsync = true;
-                    this.asyncSetter = new TaskSetterAsync<TResult>();
-                }
-
-                if (this.isAsync == true)
-                {
-                    return this.asyncSetter.SetException(ex);
-                }
-                else
-                {
-                    return this.syncSetter.SetException(ex);
-                }
+                return this.syncSetter.Value.SetException(ex);
+            }
+            else
+            {
+                return this.asyncSetter.Value.SetException(ex);
             }
         }
     }
