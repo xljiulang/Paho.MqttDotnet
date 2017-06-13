@@ -30,11 +30,6 @@ namespace Paho.MqttDotnet
         private long seted = 0L;
 
         /// <summary>
-        /// 同步锁
-        /// </summary>
-        private readonly object syncRoot = new object();
-
-        /// <summary>
         /// 通知事件
         /// </summary>
         private readonly AutoResetEvent resetEvent = new AutoResetEvent(false);
