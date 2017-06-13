@@ -41,6 +41,34 @@ namespace Paho.MqttDotnet
 
 
         /// <summary>
+        /// 获取结果
+        /// </summary>
+        /// <returns></returns>
+        public TResult GetResult()
+        {
+            // 未调用过Set，所以要等待
+            if (Interlocked.Read(ref this.seted) == 0L)
+            {
+                this.resetEvent.WaitOne();
+            }
+
+            if (this.exception != null)
+            {
+                throw exception;
+            }
+            return this.result;
+        }
+
+        /// <summary>
+        /// 获取任务
+        /// </summary>
+        /// <returns></returns>
+        public Task<TResult> GetTask()
+        {
+            throw new NotSupportedException();
+        }
+
+        /// <summary>
         /// 设置结果
         /// </summary>
         /// <param name="value">值</param>
@@ -71,32 +99,6 @@ namespace Paho.MqttDotnet
             return this.resetEvent.Set();
         }
 
-        /// <summary>
-        /// 获取结果
-        /// </summary>
-        /// <returns></returns>
-        public TResult GetResult()
-        {
-            if (Interlocked.Read(ref this.seted) == 0L)
-            {
-                this.resetEvent.WaitOne();
-            }
-
-            if (this.exception != null)
-            {
-                throw exception;
-            }
-            return this.result;
-        }
-
-        /// <summary>
-        /// 获取任务
-        /// </summary>
-        /// <returns></returns>
-        public Task<TResult> GetTask()
-        {
-            throw new NotSupportedException();
-        }
 
         /// <summary>
         /// 释放资源

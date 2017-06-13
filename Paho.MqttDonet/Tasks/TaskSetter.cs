@@ -13,20 +13,20 @@ namespace Paho.MqttDotnet
     /// <typeparam name="TResult"></typeparam>
     class TaskSetter<TResult> : ITaskSetter<TResult>
     {
-        /// <summary>
-        /// 是否为异步
+        /// <summary>       
+        /// -1 未知 0同步 1异步
         /// </summary>
         private long isAsync = -1L;
 
         /// <summary>
         /// 同步设置器
         /// </summary>
-        private Lazy<TaskSetterSync<TResult>> syncSetter = new Lazy<TaskSetterSync<TResult>>(() => new TaskSetterSync<TResult>(), true);
+        private readonly Lazy<TaskSetterSync<TResult>> syncSetter = new Lazy<TaskSetterSync<TResult>>(() => new TaskSetterSync<TResult>(), true);
 
         /// <summary>
         /// 异步设置器
         /// </summary>
-        private Lazy<TaskSetterAsync<TResult>> asyncSetter = new Lazy<TaskSetterAsync<TResult>>(() => new TaskSetterAsync<TResult>(), true);
+        private readonly Lazy<TaskSetterAsync<TResult>> asyncSetter = new Lazy<TaskSetterAsync<TResult>>(() => new TaskSetterAsync<TResult>(), true);
 
 
         /// <summary>
@@ -35,8 +35,15 @@ namespace Paho.MqttDotnet
         /// <returns></returns>
         public TResult GetResult()
         {
-            Interlocked.Exchange(ref this.isAsync, 0L);
-            return this.syncSetter.Value.GetResult();
+            var val = Interlocked.CompareExchange(ref this.isAsync, 0L, -1L);
+            if (val == 1L)
+            {
+                return this.asyncSetter.Value.GetResult();
+            }
+            else
+            {
+                return this.syncSetter.Value.GetResult();
+            }
         }
 
         /// <summary>
@@ -56,7 +63,8 @@ namespace Paho.MqttDotnet
         /// <returns></returns>
         public bool SetResult(object value)
         {
-            if (Interlocked.Read(ref this.isAsync) == 0L)
+            var val = Interlocked.CompareExchange(ref this.isAsync, 1L, -1L);
+            if (val == 0L)
             {
                 return this.syncSetter.Value.SetResult(value);
             }
@@ -73,7 +81,8 @@ namespace Paho.MqttDotnet
         /// <returns></returns>
         public bool SetException(Exception ex)
         {
-            if (Interlocked.Read(ref this.isAsync) == 0L)
+            var val = Interlocked.CompareExchange(ref this.isAsync, 1L, -1L);
+            if (val == 0L)
             {
                 return this.syncSetter.Value.SetException(ex);
             }

@@ -61,7 +61,7 @@ namespace Paho.MqttDotnet
 
 
         /// <summary>
-        /// 获取结果
+        /// 获取同步结果
         /// </summary>
         /// <returns></returns>
         public TResult GetResult()
