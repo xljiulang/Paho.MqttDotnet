@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{95F16B8E-FDE5-4770-BF1D-07D9915C00C0}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Paho.MqttDotnet</RootNamespace>
+    <AssemblyName>Paho.MqttDotnet</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Options\IMqttOptions.cs" />
+    <Compile Include="Options\MqttConnectOptions.cs" />
+    <Compile Include="Options\MqttOptions.cs" />
+    <Compile Include="MqttPersistence.cs" />
+    <Compile Include="ConnectError.cs" />
+    <Compile Include="ConnectOption.cs" />
+    <Compile Include="MqttClient.cs" />
+    <Compile Include="MqttException.cs" />
+    <Compile Include="MqttMessage.cs" />
+    <Compile Include="MqttQoS.cs" />
+    <Compile Include="MqttError.cs" />
+    <Compile Include="Options\MqttDisconnecOptions.cs" />
+    <Compile Include="Options\MqttResponseOptions.cs" />
+    <Compile Include="MqttTopicQoS.cs" />
+    <Compile Include="MqttWill.cs" />
+    <Compile Include="PInvoke\IMQTTAsync_options.cs" />
+    <Compile Include="PInvoke\MQTTAsync_disconnectOptions.cs" />
+    <Compile Include="PInvoke\MQTTAsync_message.cs" />
+    <Compile Include="PInvoke\MQTTAsync_responseOptions.cs" />
+    <Compile Include="PInvoke\MQTTAsync_successDataConnect.cs" />
+    <Compile Include="PInvoke\MQTTAsync_successDataSubscribe.cs" />
+    <Compile Include="PInvoke\MQTTAsync.cs" />
+    <Compile Include="PInvoke\MQTTAsync_connectOptions.cs" />
+    <Compile Include="PInvoke\MQTTAsync_delegate.cs" />
+    <Compile Include="PInvoke\MQTTAsync_failureData.cs" />
+    <Compile Include="PInvoke\MQTTAsync_willOptions.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tasks\ITaskSetter.cs" />
+    <Compile Include="Tasks\TaskSetter.cs" />
+    <Compile Include="Tasks\TaskSetterSync.cs" />
+    <Compile Include="Tasks\TaskSetterAsync.cs" />
+    <Compile Include="Tasks\TaskSetterTable.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="paho-mqtt3a_x86.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="paho-mqtt3a_x64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

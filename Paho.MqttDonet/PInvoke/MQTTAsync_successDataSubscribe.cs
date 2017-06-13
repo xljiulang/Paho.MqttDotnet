@@ -1,0 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Paho.MqttDotnet
+{
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+    struct MQTTAsync_successDataSubscribe
+    {
+        public int token;
+
+        public MqttQoS qos;
+    }
+}
