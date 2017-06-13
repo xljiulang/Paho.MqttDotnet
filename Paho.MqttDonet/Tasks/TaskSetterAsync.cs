@@ -16,20 +16,7 @@ namespace Paho.MqttDotnet
         /// <summary>
         /// 任务源
         /// </summary>
-        private readonly TaskCompletionSource<TResult> taskSource;
-
-
-        /// <summary>
-        /// 获取所创建的任务
-        /// </summary>
-        public Task<TResult> Task
-        {
-            get
-            {
-                return this.taskSource.Task;
-            }
-        }
-
+        private readonly TaskCompletionSource<TResult> taskSource; 
 
         /// <summary>
         /// 任务行为
