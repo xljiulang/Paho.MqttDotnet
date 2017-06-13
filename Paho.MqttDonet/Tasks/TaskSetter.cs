@@ -16,16 +16,21 @@ namespace Paho.MqttDotnet
         /// 是否为异步
         /// </summary>
         private bool? isAsync;
-        
+
         /// <summary>
         /// 同步设置器
         /// </summary>
-        private TaskSetterSync<TResult> sync;
+        private TaskSetterSync<TResult> syncSetter;
 
         /// <summary>
         /// 异步设置器
         /// </summary>
-        private TaskSetterAsync<TResult> async;
+        private TaskSetterAsync<TResult> asyncSetter;
+
+        /// <summary>
+        /// 同步锁
+        /// </summary>
+        private readonly object syncRoot = new object();
 
         /// <summary>
         /// 同步获取任务结果
@@ -33,9 +38,12 @@ namespace Paho.MqttDotnet
         /// <returns></returns>
         public TResult GetResult()
         {
-            this.isAsync = false;
-            this.sync = new TaskSetterSync<TResult>();
-            return this.sync.GetResult();
+            lock (this.syncRoot)
+            {
+                this.isAsync = false;
+                this.syncSetter = new TaskSetterSync<TResult>();
+                return this.syncSetter.GetResult();
+            }
         }
 
         /// <summary>
@@ -44,9 +52,12 @@ namespace Paho.MqttDotnet
         /// <returns></returns>
         public Task<TResult> GetTask()
         {
-            this.isAsync = true;
-            this.async = new TaskSetterAsync<TResult>();
-            return this.async.GetTask();
+            lock (this.syncRoot)
+            {
+                this.isAsync = true;
+                this.asyncSetter = new TaskSetterAsync<TResult>();
+                return this.asyncSetter.GetTask();
+            }
         }
 
         /// <summary>
@@ -56,19 +67,22 @@ namespace Paho.MqttDotnet
         /// <returns></returns>
         public bool SetResult(object value)
         {
-            if (this.isAsync == null)
+            lock (this.syncRoot)
             {
-                this.isAsync = true;
-                this.async = new TaskSetterAsync<TResult>();
-            }
+                if (this.isAsync == null)
+                {
+                    this.isAsync = true;
+                    this.asyncSetter = new TaskSetterAsync<TResult>();
+                }
 
-            if (this.isAsync == true)
-            {
-                return this.async.SetResult(value);
-            }
-            else
-            {
-                return this.sync.SetResult(value);
+                if (this.isAsync == true)
+                {
+                    return this.asyncSetter.SetResult(value);
+                }
+                else
+                {
+                    return this.syncSetter.SetResult(value);
+                }
             }
         }
 
@@ -79,19 +93,22 @@ namespace Paho.MqttDotnet
         /// <returns></returns>
         public bool SetException(Exception ex)
         {
-            if (this.isAsync == null)
+            lock (this.syncRoot)
             {
-                this.isAsync = true;
-                this.async = new TaskSetterAsync<TResult>();
-            }
+                if (this.isAsync == null)
+                {
+                    this.isAsync = true;
+                    this.asyncSetter = new TaskSetterAsync<TResult>();
+                }
 
-            if (this.isAsync == true)
-            {
-                return this.async.SetException(ex);
-            }
-            else
-            {
-                return this.sync.SetException(ex);
+                if (this.isAsync == true)
+                {
+                    return this.asyncSetter.SetException(ex);
+                }
+                else
+                {
+                    return this.syncSetter.SetException(ex);
+                }
             }
         }
     }

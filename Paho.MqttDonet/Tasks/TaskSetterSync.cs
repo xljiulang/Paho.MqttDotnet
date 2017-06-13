@@ -25,6 +25,16 @@ namespace Paho.MqttDotnet
         private Exception exception;
 
         /// <summary>
+        /// 是否已调用setXXX
+        /// </summary>
+        private bool seted = false;
+
+        /// <summary>
+        /// 同步锁
+        /// </summary>
+        private readonly object syncRoot = new object();
+
+        /// <summary>
         /// 通知事件
         /// </summary>
         private readonly AutoResetEvent resetEvent = new AutoResetEvent(false);
@@ -37,8 +47,17 @@ namespace Paho.MqttDotnet
         /// <returns></returns>
         public bool SetResult(object value)
         {
-            this.result = (TResult)value;
-            return this.resetEvent.Set();
+            lock (this.syncRoot)
+            {
+                if (this.seted == true)
+                {
+                    return false;
+                }
+
+                this.seted = true;
+                this.result = (TResult)value;
+                return this.resetEvent.Set();
+            }
         }
 
         /// <summary>
@@ -48,8 +67,17 @@ namespace Paho.MqttDotnet
         /// <returns></returns>
         public bool SetException(Exception ex)
         {
-            this.exception = ex;
-            return this.resetEvent.Set();
+            lock (this.syncRoot)
+            {
+                if (this.seted == true)
+                {
+                    return false;
+                }
+
+                this.seted = true;
+                this.exception = ex;
+                return this.resetEvent.Set();
+            }
         }
 
         /// <summary>
@@ -58,12 +86,19 @@ namespace Paho.MqttDotnet
         /// <returns></returns>
         public TResult GetResult()
         {
-            this.resetEvent.WaitOne();
-            if (this.exception != null)
+            lock (this.syncRoot)
             {
-                throw exception;
+                if (this.seted == false)
+                {
+                    this.resetEvent.WaitOne();
+                }
+
+                if (this.exception != null)
+                {
+                    throw exception;
+                }
+                return this.result;
             }
-            return this.result;
         }
 
         /// <summary>
