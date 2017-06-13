@@ -96,13 +96,17 @@ namespace Paho.MqttDotnet
         /// <returns></returns>
         internal MQTTAsync_message ToStruct()
         {
-            var payloadlen = this.Payload == null ? 0 : this.Payload.Length;
+            if (this.Payload == null)
+            {
+                this.Payload = new byte[0];
+            }
+
             var msg = MQTTAsync_message.Init();
             msg.retained = this.Retain ? 1 : 0;
-            msg.payloadlen = payloadlen;
+            msg.payloadlen = this.Payload.Length;
             msg.qos = (int)this.QoS;
-            msg.payload = Marshal.AllocHGlobal(payloadlen);
-            Marshal.Copy(this.Payload, 0, msg.payload, payloadlen);
+            msg.payload = Marshal.AllocHGlobal(this.Payload.Length);
+            Marshal.Copy(this.Payload, 0, msg.payload, this.Payload.Length);
             return msg;
         }
     }
