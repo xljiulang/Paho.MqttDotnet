@@ -57,17 +57,6 @@ namespace Paho.MqttDotnet
         }
 
         /// <summary>
-        /// 取出并移除全部的任务
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerable<ITaskSetter> TakeAll()
-        {
-            var values = this.table.Values.ToArray();
-            this.table.Clear();
-            return values;
-        }
-
-        /// <summary>
         /// 清除所有任务
         /// </summary>
         public void Clear()
