@@ -33,15 +33,20 @@ namespace Paho.MqttDotnet
         /// <param name="successData">数据</param>
         protected override void MQTTAsync_onFailure(IntPtr context, MQTTAsync_failureData* failureData)
         {
-            if (failureData != NULL)
-            {
-                var code = (ConnectError)failureData->code;
-                base.RaiseOnCompleted(context, code);
-            }
-            else
+            if (failureData == NULL)
             {
                 var ex = new MqttException(MqttError.Failure);
                 base.RaiseOnException(context, ex);
+            }
+            else if (failureData->code < 0)
+            {
+                var ex = new MqttException(failureData->code);
+                base.RaiseOnException(context, ex);
+            }
+            else
+            {
+                var code = (ConnectError)failureData->code;
+                base.RaiseOnCompleted(context, code);
             }
         }
     }

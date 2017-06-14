@@ -16,7 +16,7 @@ namespace Paho.MqttDotnet
         /// <summary>
         /// 任务源
         /// </summary>
-        private readonly TaskCompletionSource<TResult> taskSource; 
+        private readonly TaskCompletionSource<TResult> taskSource;
 
         /// <summary>
         /// 任务行为
@@ -53,7 +53,14 @@ namespace Paho.MqttDotnet
         /// <returns></returns>
         public TResult GetResult()
         {
-            return this.GetTask().Result;
+            try
+            {
+                return this.GetTask().Result;
+            }
+            catch (AggregateException ex)
+            {
+                throw ex.InnerException;
+            }
         }
 
         /// <summary>
