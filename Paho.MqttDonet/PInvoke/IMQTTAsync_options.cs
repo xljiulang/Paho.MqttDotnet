@@ -11,6 +11,6 @@ namespace Paho.MqttDotnet
 
         void SetContext(IntPtr value);
 
-        void SetCallbacks(Delegate success,Delegate failure);         
+        void SetCallbacks(MQTTAsync_onSuccess success, MQTTAsync_onFailure failure);
     }
 }

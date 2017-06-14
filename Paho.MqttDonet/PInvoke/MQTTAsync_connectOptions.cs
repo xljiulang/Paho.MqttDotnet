@@ -62,7 +62,7 @@ namespace Paho.MqttDotnet
             this.context = value;
         }
 
-        void IMQTTAsync_options.SetCallbacks(Delegate success, Delegate failure)
+        void IMQTTAsync_options.SetCallbacks(MQTTAsync_onSuccess success, MQTTAsync_onFailure failure)
         {
             this.onSuccess = Marshal.GetFunctionPointerForDelegate(success);
             this.onFailure = Marshal.GetFunctionPointerForDelegate(failure);
