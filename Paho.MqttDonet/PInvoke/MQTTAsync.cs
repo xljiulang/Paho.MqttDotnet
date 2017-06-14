@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
+using System.Web;
 
 namespace Paho.MqttDotnet
 {
@@ -12,10 +13,27 @@ namespace Paho.MqttDotnet
     {
         private const string mqtt3a_dll = "paho-mqtt3a.dll";
 
+        static MQTTAsync()
+        {
+            var path = Environment.Is64BitProcess ? "x64" : "x86";
+            var dllFile = Path.Combine(path, mqtt3a_dll);
+
+            if (HttpContext.Current != null)
+            {
+                dllFile = HttpContext.Current.Server.MapPath(dllFile);
+            }
+            MQTTAsync.LoadLibraryA(dllFile);
+        }
+
         public static IntPtr ToUnmanagedPointer(this string str)
         {
             return Marshal.StringToHGlobalAnsi(str);
         }
+
+
+        [DllImport("kernel32")]
+        public static extern IntPtr LoadLibraryA(
+            [MarshalAs(UnmanagedType.LPStr)] string fileName);
 
 
         [DllImport(mqtt3a_dll, CallingConvention = CallingConvention.Cdecl)]
@@ -45,7 +63,7 @@ namespace Paho.MqttDotnet
             MQTTAsync_connectionLost connectionLost,
             MQTTAsync_messageArrived messageArrived,
             MQTTAsync_deliveryComplete deliveryComplete);
- 
+
 
         [DllImport(mqtt3a_dll, CallingConvention = CallingConvention.Cdecl)]
         public static extern MqttError MQTTAsync_disconnect(
