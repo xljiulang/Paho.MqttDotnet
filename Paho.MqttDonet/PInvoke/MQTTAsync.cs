@@ -46,7 +46,7 @@ namespace Paho.MqttDotnet
 
         [DllImport(mqtt3a_dll, CallingConvention = CallingConvention.Cdecl)]
         public static extern void MQTTAsync_destroy(
-            IntPtr handle);
+            ref IntPtr handle);
 
 
         [DllImport(mqtt3a_dll, CallingConvention = CallingConvention.Cdecl)]
