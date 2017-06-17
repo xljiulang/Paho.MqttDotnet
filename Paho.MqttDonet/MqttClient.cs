@@ -26,7 +26,7 @@ namespace Paho.MqttDotnet
     /// <summary>
     /// 表示mqtt客户端
     /// </summary>
-    unsafe public class MqttClient : IDisposable
+    unsafe public class MqttClient : SafeHandle
     {
         /// <summary>
         /// 用于保存最近的连接配置项
@@ -37,11 +37,6 @@ namespace Paho.MqttDotnet
         /// 用于生成任务的id
         /// </summary>
         private int taskIdValue = 0;
-
-        /// <summary>
-        /// 用于保存对应的非托管客户端句柄
-        /// </summary>
-        private IntPtr handle = IntPtr.Zero;
 
         /// <summary>
         /// 用于保存对象的引用
@@ -76,6 +71,17 @@ namespace Paho.MqttDotnet
         }
 
         /// <summary>
+        /// 获取句柄是否无效
+        /// </summary>
+        public sealed override bool IsInvalid
+        {
+            get
+            {
+                return this.handle == IntPtr.Zero;
+            }
+        }
+
+        /// <summary>
         /// mqtt客户端
         /// </summary>
         /// <param name="serverUri">mqtt://mymqtt.com</param>
@@ -99,6 +105,7 @@ namespace Paho.MqttDotnet
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="MqttException"></exception>
         public MqttClient(string serverUri, string clientId, MqttPersistence persistence)
+            : base(IntPtr.Zero, true)
         {
             if (string.IsNullOrEmpty(serverUri))
             {
@@ -197,13 +204,14 @@ namespace Paho.MqttDotnet
             var opt = new TMqttOptions();
             opt.OnCompleted((context, value) =>
             {
+                this.hashSet.Remove(opt);
                 var taskId = context.ToInt32();
                 this.taskSetterTable.Take(taskId).SetResult(value);
-                this.hashSet.Remove(opt);
             });
 
             opt.OnException((context, ex) =>
             {
+                this.hashSet.Remove(opt);
                 var taskId = context.ToInt32();
                 this.taskSetterTable.Take(taskId).SetException(ex);
             });
@@ -645,17 +653,17 @@ namespace Paho.MqttDotnet
         }
 
         /// <summary>
-        /// 释放资源
+        /// 释放句柄
         /// </summary>
-        /// <exception cref="ObjectDisposedException"></exception>
-        public void Dispose()
+        protected sealed override bool ReleaseHandle()
         {
-            if (this.handle == IntPtr.Zero)
+            if (this.IsInvalid == true)
             {
-                throw new ObjectDisposedException(this.GetType().Name);
+                return false;
             }
-            MQTTAsync.MQTTAsync_destroy(this.handle);
-            this.handle = IntPtr.Zero;
+
+            MQTTAsync.MQTTAsync_destroy(ref this.handle);
+            return this.IsInvalid;
         }
     }
 }
