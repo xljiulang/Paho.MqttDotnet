@@ -55,12 +55,8 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MqttOptions\IMqttOptions.cs" />
@@ -95,7 +91,9 @@
     <Compile Include="Tasks\TaskSetterTable.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="libs\x64\paho-mqtt3a.dll" />
+    <Content Include="libs\x64\paho-mqtt3a.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="libs\x86\paho-mqtt3a.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
