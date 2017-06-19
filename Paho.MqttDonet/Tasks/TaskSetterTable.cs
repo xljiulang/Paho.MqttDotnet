@@ -20,14 +20,14 @@ namespace Paho.MqttDotnet
         /// <summary>
         /// 任务行为字典
         /// </summary>
-        private readonly ConcurrentDictionary<T, ITaskSetter> table;
+        private readonly ConcurrentDictionary<T, ITaskSetter> cached;
 
         /// <summary>
         /// 任务行为表
         /// </summary>
         public TaskSetterTable()
         {
-            this.table = new ConcurrentDictionary<T, ITaskSetter>();
+            this.cached = new ConcurrentDictionary<T, ITaskSetter>();
         }
 
         /// <summary>
@@ -39,9 +39,9 @@ namespace Paho.MqttDotnet
         public ITaskSetter<TResult> Create<TResult>(T id)
         {
             var taskSetter = new TaskSetter<TResult>();
-            this.table.TryAdd(id, taskSetter);
+            this.cached.TryAdd(id, taskSetter);
             return taskSetter;
-        } 
+        }
 
         /// <summary>      
         /// 获取并移除与id匹配的任务
@@ -49,10 +49,10 @@ namespace Paho.MqttDotnet
         /// </summary>
         /// <param name="id">任务id</param>
         /// <returns></returns>
-        public ITaskSetter Take(T id)
+        public ITaskSetter Remove(T id)
         {
             ITaskSetter taskSetter;
-            this.table.TryRemove(id, out taskSetter);
+            this.cached.TryRemove(id, out taskSetter);
             return taskSetter;
         }
 
@@ -61,7 +61,85 @@ namespace Paho.MqttDotnet
         /// </summary>
         public void Clear()
         {
-            this.table.Clear();
+            this.cached.Clear();
+        }
+
+
+        /// <summary>
+        /// 表示同步异步支持的任务设置器
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
+        private class TaskSetter<TResult> : ITaskSetter<TResult>
+        {
+            /// <summary>
+            /// 任务源
+            /// </summary>
+            private readonly TaskCompletionSource<TResult> taskSource;
+
+            /// <summary>
+            /// 任务行为
+            /// </summary>
+            public TaskSetter()
+            {
+                this.taskSource = new TaskCompletionSource<TResult>();
+            }
+
+            /// <summary>
+            /// 设置任务的行为结果
+            /// </summary>     
+            /// <param name="value">数据值</param>   
+            /// <returns></returns>
+            bool ITaskSetter.SetResult(object value)
+            {
+                return this.taskSource.TrySetResult((TResult)value);
+            }
+
+            /// <summary>
+            /// 设置任务的行为结果
+            /// </summary>     
+            /// <param name="value">数据值</param>   
+            /// <returns></returns>
+            public bool SetResult(TResult value)
+            {
+                return this.taskSource.TrySetResult(value);
+            }
+
+
+            /// <summary>
+            /// 设置设置为异常
+            /// </summary>
+            /// <param name="ex">异常</param>
+            /// <returns></returns>
+            public bool SetException(Exception ex)
+            {
+                return this.taskSource.TrySetException(ex);
+            }
+
+
+            /// <summary>
+            /// 获取同步结果
+            /// </summary>
+            /// <returns></returns>
+            public TResult GetResult()
+            {
+                try
+                {
+                    return this.GetTask().Result;
+                }
+                catch (AggregateException ex)
+                {
+                    throw ex.InnerException;
+                }
+            }
+
+            /// <summary>
+            /// 获取任务
+            /// </summary>
+            /// <returns></returns>
+            public Task<TResult> GetTask()
+            {
+                return this.taskSource.Task;
+            }
         }
     }
 }

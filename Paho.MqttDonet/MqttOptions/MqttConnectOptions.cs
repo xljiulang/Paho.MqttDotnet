@@ -8,7 +8,7 @@ namespace Paho.MqttDotnet
     /// <summary>
     /// 表示Mqtt连接选项
     /// </summary>
-    unsafe class MqttConnectOptions : MqttOptions<MQTTAsync_connectOptions>
+    unsafe class MqttConnectOptions : MqttOptionsBase<MQTTAsync_connectOptions>
     {
         /// <summary>
         /// 空指针

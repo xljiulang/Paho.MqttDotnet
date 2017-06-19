@@ -15,24 +15,13 @@ namespace Paho.MqttDotnet
 
         static MQTTAsync()
         {
-            var dllFile = Path.Combine(Environment.Is64BitProcess ? "x64" : "x86", mqtt3a_dll);
-            if (HttpContext.Current != null)
-            {
-                dllFile = Path.Combine("~\\bin", dllFile);
-                dllFile = HttpContext.Current.Server.MapPath(dllFile);
-            }
-            MQTTAsync.LoadLibraryA(dllFile);
+            LibraryLoader.Load(mqtt3a_dll);
         }
 
         public static IntPtr ToUnmanagedPointer(this string str)
         {
             return Marshal.StringToHGlobalAnsi(str);
         }
-
-
-        [DllImport("kernel32")]
-        private static extern IntPtr LoadLibraryA(
-           [MarshalAs(UnmanagedType.LPStr)] string fileName);
 
 
         [DllImport(mqtt3a_dll, CallingConvention = CallingConvention.Cdecl)]

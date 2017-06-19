@@ -8,7 +8,7 @@ namespace Paho.MqttDotnet
     /// <summary>
     /// 表示mqtt回复选项
     /// </summary>
-    unsafe class MqttResponseOptions : MqttOptions<MQTTAsync_responseOptions>
+    unsafe class MqttResponseOptions : MqttOptionsBase<MQTTAsync_responseOptions>
     {
         /// <summary>
         /// 执行成功

@@ -63,9 +63,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Options\IMqttOptions.cs" />
-    <Compile Include="Options\MqttConnectOptions.cs" />
-    <Compile Include="Options\MqttOptions.cs" />
+    <Compile Include="MqttOptions\IMqttOptions.cs" />
+    <Compile Include="MqttOptions\MqttConnectOptions.cs" />
+    <Compile Include="MqttOptions\MqttOptionsBase.cs" />
     <Compile Include="MqttPersistence.cs" />
     <Compile Include="ConnectError.cs" />
     <Compile Include="ConnectOption.cs" />
@@ -74,32 +74,32 @@
     <Compile Include="MqttMessage.cs" />
     <Compile Include="MqttQoS.cs" />
     <Compile Include="MqttError.cs" />
-    <Compile Include="Options\MqttDisconnecOptions.cs" />
-    <Compile Include="Options\MqttResponseOptions.cs" />
+    <Compile Include="MqttOptions\MqttDisconnecOptions.cs" />
+    <Compile Include="MqttOptions\MqttResponseOptions.cs" />
     <Compile Include="MqttTopicQoS.cs" />
     <Compile Include="MqttWill.cs" />
-    <Compile Include="PInvoke\IMQTTAsync_options.cs" />
-    <Compile Include="PInvoke\MQTTAsync_disconnectOptions.cs" />
-    <Compile Include="PInvoke\MQTTAsync_message.cs" />
-    <Compile Include="PInvoke\MQTTAsync_responseOptions.cs" />
-    <Compile Include="PInvoke\MQTTAsync_successDataConnect.cs" />
-    <Compile Include="PInvoke\MQTTAsync_successDataSubscribe.cs" />
-    <Compile Include="PInvoke\MQTTAsync.cs" />
-    <Compile Include="PInvoke\MQTTAsync_connectOptions.cs" />
-    <Compile Include="PInvoke\MQTTAsync_delegate.cs" />
-    <Compile Include="PInvoke\MQTTAsync_failureData.cs" />
-    <Compile Include="PInvoke\MQTTAsync_willOptions.cs" />
+    <Compile Include="Mqtt3a\IMQTTAsync_options.cs" />
+    <Compile Include="LibraryLoader.cs" />
+    <Compile Include="Mqtt3a\MQTTAsync_disconnectOptions.cs" />
+    <Compile Include="Mqtt3a\MQTTAsync_message.cs" />
+    <Compile Include="Mqtt3a\MQTTAsync_responseOptions.cs" />
+    <Compile Include="Mqtt3a\MQTTAsync_successDataConnect.cs" />
+    <Compile Include="Mqtt3a\MQTTAsync_successDataSubscribe.cs" />
+    <Compile Include="Mqtt3a\MQTTAsync.cs" />
+    <Compile Include="Mqtt3a\MQTTAsync_connectOptions.cs" />
+    <Compile Include="Mqtt3a\MQTTAsync_delegate.cs" />
+    <Compile Include="Mqtt3a\MQTTAsync_failureData.cs" />
+    <Compile Include="Mqtt3a\MQTTAsync_willOptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tasks\ITaskSetter.cs" />
-    <Compile Include="Tasks\TaskSetter.cs" />
     <Compile Include="Tasks\TaskSetterTable.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="x64\paho-mqtt3a.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <Content Include="libs\x64\paho-mqtt3a.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="x86\paho-mqtt3a.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <Content Include="libs\x86\paho-mqtt3a.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

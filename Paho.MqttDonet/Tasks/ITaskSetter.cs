@@ -36,6 +36,13 @@ namespace Paho.MqttDotnet
     interface ITaskSetter<TResult> : ITaskSetter
     {
         /// <summary>
+        /// 设置任务的行为结果
+        /// </summary>     
+        /// <param name="value">数据值</param>   
+        /// <returns></returns>
+        bool SetResult(TResult value);
+
+        /// <summary>
         /// 同步获取任务结果
         /// </summary>
         /// <returns></returns>

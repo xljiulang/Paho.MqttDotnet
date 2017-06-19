@@ -15,14 +15,17 @@ namespace Paho.MqttDotnet
         /// 成功
         /// </summary>
         Success = 0,
+
         /// <summary>
         /// 失败
         /// </summary>
         Failure = -1,
+
         /// <summary>
         /// 持久化错误
         /// </summary>
         PersistenceError = -2,
+
         /// <summary>
         /// 连接已断开 
         /// </summary>

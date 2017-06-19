@@ -8,7 +8,7 @@ namespace Paho.MqttDotnet
     /// <summary>
     /// 表示mqt断开选项
     /// </summary>
-    unsafe class MqttDisconnecOptions : MqttOptions<MQTTAsync_disconnectOptions>
+    unsafe class MqttDisconnecOptions : MqttOptionsBase<MQTTAsync_disconnectOptions>
     {
         /// <summary>
         /// 执行成功

@@ -202,18 +202,16 @@ namespace Paho.MqttDotnet
         private TMqttOptions AutoRef<TMqttOptions>() where TMqttOptions : IMqttOptions, new()
         {
             var opt = new TMqttOptions();
-            opt.OnCompleted((context, value) =>
+            opt.OnCompleted((taskId, value) =>
             {
                 this.hashSet.Remove(opt);
-                var taskId = context.ToInt32();
-                this.taskSetterTable.Take(taskId).SetResult(value);
+                this.taskSetterTable.Remove(taskId).SetResult(value);
             });
 
-            opt.OnException((context, ex) =>
+            opt.OnException((taskId, ex) =>
             {
                 this.hashSet.Remove(opt);
-                var taskId = context.ToInt32();
-                this.taskSetterTable.Take(taskId).SetException(ex);
+                this.taskSetterTable.Remove(taskId).SetException(ex);
             });
 
             this.hashSet.Add(opt);
