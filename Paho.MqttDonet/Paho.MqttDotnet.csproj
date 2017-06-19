@@ -95,9 +95,7 @@
     <Compile Include="Tasks\TaskSetterTable.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="libs\x64\paho-mqtt3a.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="libs\x64\paho-mqtt3a.dll" />
     <Content Include="libs\x86\paho-mqtt3a.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
