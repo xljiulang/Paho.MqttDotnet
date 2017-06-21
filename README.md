@@ -5,8 +5,12 @@ A .Net wrapper for eclipse/paho.mqtt.c, support async/await asynchronous
 * eclipse/paho.mqtt.c
 * vs2012/.net framework 4.0 or later
 
+## Support
+* Asp.net / WCF 
+* WinForm / WPF
+* Console / Service
 
-### Demo
+## Demo
 ```
 async static Task DemoAsync()
 {
