@@ -74,6 +74,7 @@
     <Compile Include="MqttOptions\MqttDisconnecOptions.cs" />
     <Compile Include="MqttOptions\MqttResponseOptions.cs" />
     <Compile Include="MqttTopicQoS.cs" />
+    <Compile Include="MqttTraceLevels.cs" />
     <Compile Include="MqttWill.cs" />
     <Compile Include="Mqtt3a\IMQTTAsync_options.cs" />
     <Compile Include="LibraryLoader.cs" />

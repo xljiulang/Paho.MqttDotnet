@@ -663,5 +663,37 @@ namespace Paho.MqttDotnet
             MQTTAsync.MQTTAsync_destroy(ref this.handle);
             return this.IsInvalid;
         }
+
+
+        /// <summary>
+        /// 追踪回调
+        /// </summary>
+        private static MQTTAsync_traceCallback trackCallback;
+
+        /// <summary>
+        /// 设置追踪级别
+        /// </summary>
+        /// <param name="level">级别</param>
+        public static void SetTraceLevel(MqttTraceLevels level)
+        {
+            MQTTAsync.MQTTAsync_setTraceLevel(level);
+        }
+
+        /// <summary>
+        /// 设置追踪回调
+        /// </summary>
+        /// <param name="traceCallback">追踪回调，null则清除追踪</param>
+        public static void SetTraceCallback(Action<MqttTraceLevels, string> traceCallback)
+        {
+            if (traceCallback == null)
+            {
+                MQTTAsync.MQTTAsync_setTraceCallback(null);
+            }
+            else
+            {
+                MqttClient.trackCallback = new MQTTAsync_traceCallback((level, msg) => traceCallback(level, msg));
+                MQTTAsync.MQTTAsync_setTraceCallback(MqttClient.trackCallback);
+            }
+        }
     }
 }

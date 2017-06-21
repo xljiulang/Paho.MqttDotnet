@@ -22,5 +22,6 @@ namespace Paho.MqttDotnet
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     delegate void MQTTAsync_deliveryComplete(IntPtr context, int token);
 
-
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    delegate void MQTTAsync_traceCallback(MqttTraceLevels level, [MarshalAs(UnmanagedType.LPStr)]string message);
 }

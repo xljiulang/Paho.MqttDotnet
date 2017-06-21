@@ -114,5 +114,13 @@ namespace Paho.MqttDotnet
         [DllImport(mqtt3a_dll, CallingConvention = CallingConvention.Cdecl)]
         public static extern int MQTTAsync_isConnected(
             IntPtr handle);
+
+
+        [DllImport(mqtt3a_dll, CallingConvention = CallingConvention.Cdecl)]
+        public static extern void MQTTAsync_setTraceLevel(MqttTraceLevels level);
+
+
+        [DllImport(mqtt3a_dll, CallingConvention = CallingConvention.Cdecl)]
+        public static extern void MQTTAsync_setTraceCallback(MQTTAsync_traceCallback callback);
     }
 }
