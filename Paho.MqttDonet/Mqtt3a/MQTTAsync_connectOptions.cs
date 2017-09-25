@@ -51,6 +51,10 @@ namespace Paho.MqttDotnet
 
         public int maxRetryInterval;
 
+        public int len;
+
+        public IntPtr dataOfPassword;
+
         public void Init()
         {
             struct_id = new[] { 'M', 'Q', 'T', 'C' };

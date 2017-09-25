@@ -89,5 +89,11 @@ namespace Paho.MqttDotnet
         /// </summary>
         [Description("消息过大")]
         MaxBufferedMessages = -12,
+
+        /// <summary>
+        /// 未支持SSL
+        /// </summary>
+        [Description("未支持SSL")]
+        SslNotSupported = -13
     }
 }

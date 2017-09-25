@@ -104,7 +104,9 @@ namespace Paho.MqttDotnet
             if (this.Will != null)
             {
                 var will = this.Will.ToStruct();
-                Marshal.StructureToPtr(will, opt.will, true);
+                var willPtr = Marshal.AllocHGlobal(Marshal.SizeOf(will));
+                Marshal.StructureToPtr(will, willPtr, true);
+                opt.will = willPtr;
             }
             return opt;
         }

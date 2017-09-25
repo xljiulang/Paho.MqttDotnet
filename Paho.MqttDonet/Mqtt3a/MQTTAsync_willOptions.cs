@@ -23,6 +23,10 @@ namespace Paho.MqttDotnet
 
         public int qos;
 
+        public int len;
+
+        public IntPtr dataOfmessage;
+
         public void Dispose()
         {
             Marshal.FreeHGlobal(this.topicName);
