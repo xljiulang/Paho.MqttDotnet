@@ -4,6 +4,7 @@ A .Net wrapper for eclipse/paho.mqtt.c, support async/await asynchronous
 ## Dependencies
 * eclipse/paho.mqtt.c
 * vs2012/.net framework 4.0 or later
+* Visual C++ Redistributable 2015
 
 ## Support
 * Asp.net / WCF 
