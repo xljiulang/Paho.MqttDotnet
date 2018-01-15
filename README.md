@@ -12,7 +12,7 @@ A .Net wrapper for eclipse/paho.mqtt.c, support async/await asynchronous
 * Console / Service
 
 ## Demo
-```
+```c#
 async static Task DemoAsync()
 {
     // Trace
